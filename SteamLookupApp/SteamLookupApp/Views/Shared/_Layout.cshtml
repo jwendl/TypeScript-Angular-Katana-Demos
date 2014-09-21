@@ -21,6 +21,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("Steam Lookup", "Index", "Steam", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
                 </ul>
             </div>
@@ -36,6 +37,9 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/rx.lite.js"></script>
+    <script src="~/Scripts/rx.jquery.js"></script>
+    <script src="~/Scripts/app/SteamLookup.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
