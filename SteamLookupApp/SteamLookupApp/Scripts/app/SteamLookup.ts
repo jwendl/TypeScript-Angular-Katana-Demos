@@ -3,7 +3,7 @@
 module SteamLookupApp {
     "use strict";
 
-    export class LookupApi {
+    export class SteamLookup {
         constructor() {
 
         }
@@ -11,14 +11,14 @@ module SteamLookupApp {
         public SetBindings() {
             var profileObservable = $("#steamUserName")
                 .keyupAsObservable()
-                .map(LookupApi.FetchElementValue)
-                .filter(LookupApi.FilterInput)
+                .map(SteamLookup.FetchElementValue)
+                .filter(SteamLookup.FilterInput)
                 .throttle(500)
                 .distinctUntilChanged()
-                .flatMapLatest(LookupApi.FetchValue);
+                .flatMapLatest(SteamLookup.FetchValue);
 
             var selector = $("#results");
-            var subscription = profileObservable.subscribe(LookupApi.ProcessResults, LookupApi.ProcessError);
+            var subscription = profileObservable.subscribe(SteamLookup.ProcessResults, SteamLookup.ProcessError);
         }
 
         private static ProcessResults(result) {
@@ -41,13 +41,13 @@ module SteamLookupApp {
 
             htmlOutput += "<table class=\"table\">";
             htmlOutput += "<thead><tr><th>Game</th><th>Time Played</th></tr></thead>";
-            htmlOutput += profile.Games.map(LookupApi.GameItemTemplate).join("");
+            htmlOutput += profile.Games.map(SteamLookup.GameItemTemplate).join("");
             htmlOutput += "</table>";
             $(htmlOutput).appendTo("#results");
         }
 
         private static GameItemTemplate(game: TinySteamWrapper.SteamProfileGame) {
-            var playTimeSpan: System.TimeSpan = LookupApi.ParseTimeValue(game.TotalPlayTime);
+            var playTimeSpan: System.TimeSpan = SteamLookup.ParseTimeValue(game.TotalPlayTime);
             var htmlOutput = "<tr><td>";
             htmlOutput += "<a href=\"/Steam/ViewGame/" + game.App.ID + "\">";
             htmlOutput += game.App.Name;
@@ -133,6 +133,6 @@ module SteamLookupApp {
 }
 
 $(document).ready(function () {
-    var lookupApi = new SteamLookupApp.LookupApi();
-    lookupApi.SetBindings();
+    var steamLookup = new SteamLookupApp.SteamLookup();
+    steamLookup.SetBindings();
 });

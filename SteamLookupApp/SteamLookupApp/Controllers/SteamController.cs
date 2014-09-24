@@ -9,5 +9,10 @@ namespace SteamLookupApp.Controllers
         {
             return View();
         }
+
+        public ActionResult ViewGame()
+        {
+            return View();
+        }
     }
 }

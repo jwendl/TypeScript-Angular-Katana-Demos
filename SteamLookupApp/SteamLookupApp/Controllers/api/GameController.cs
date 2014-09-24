@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SteamLookupApp.Models;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -21,6 +22,7 @@ namespace SteamLookupApp.Controllers.api
                 var gameUri = new Uri(String.Format(urlString, appId));
                 var jsonGameString = await webClient.DownloadStringTaskAsync(gameUri);
                 jsonGameString = jsonGameString.Replace("[]", "{}");
+                jsonGameString = jsonGameString.Replace("\"package_groups\":{}", "\"package_groups\":[]");
 
                 var jsonSteamGame = JsonConvert.DeserializeObject<JsonSteamGame>(jsonGameString);
                 var dlcAppIds = String.Join(",", jsonSteamGame[appId].data.dlc);
@@ -28,10 +30,18 @@ namespace SteamLookupApp.Controllers.api
                 var dlcUri = new Uri(String.Format(urlString, dlcAppIds));
                 var jsonDlcString = await webClient.DownloadStringTaskAsync(dlcUri);
                 jsonDlcString = jsonDlcString.Replace("[]", "{}");
-                var jsonDlcList = JsonConvert.DeserializeObject<JsonSteamGame>(jsonDlcString);
-            }
+                jsonDlcString = jsonDlcString.Replace("\"package_groups\":{}", "\"package_groups\":[]");
 
-            return default(SteamGame);
+                var jsonDlcList = JsonConvert.DeserializeObject<JsonSteamGame>(jsonDlcString);
+                var gameInformation = jsonSteamGame.First().Value;
+                var steamGame = new SteamGame(gameInformation.data);
+                foreach (var downloadableContent in jsonDlcList)
+                {
+                    steamGame.DownloadableContent.Add(new SteamGame(downloadableContent.Value.data));
+                }
+
+                return steamGame;
+            }
         }
     }
 }

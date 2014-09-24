@@ -3,17 +3,17 @@ var SteamLookupApp;
 (function (SteamLookupApp) {
     "use strict";
 
-    var LookupApi = (function () {
-        function LookupApi() {
+    var SteamLookup = (function () {
+        function SteamLookup() {
         }
-        LookupApi.prototype.SetBindings = function () {
-            var profileObservable = $("#steamUserName").keyupAsObservable().map(LookupApi.FetchElementValue).filter(LookupApi.FilterInput).throttle(500).distinctUntilChanged().flatMapLatest(LookupApi.FetchValue);
+        SteamLookup.prototype.SetBindings = function () {
+            var profileObservable = $("#steamUserName").keyupAsObservable().map(SteamLookup.FetchElementValue).filter(SteamLookup.FilterInput).throttle(500).distinctUntilChanged().flatMapLatest(SteamLookup.FetchValue);
 
             var selector = $("#results");
-            var subscription = profileObservable.subscribe(LookupApi.ProcessResults, LookupApi.ProcessError);
+            var subscription = profileObservable.subscribe(SteamLookup.ProcessResults, SteamLookup.ProcessError);
         };
 
-        LookupApi.ProcessResults = function (result) {
+        SteamLookup.ProcessResults = function (result) {
             $("#results").children().remove();
             var profile = result.data;
 
@@ -34,13 +34,13 @@ var SteamLookupApp;
 
             htmlOutput += "<table class=\"table\">";
             htmlOutput += "<thead><tr><th>Game</th><th>Time Played</th></tr></thead>";
-            htmlOutput += profile.Games.map(LookupApi.GameItemTemplate).join("");
+            htmlOutput += profile.Games.map(SteamLookup.GameItemTemplate).join("");
             htmlOutput += "</table>";
             $(htmlOutput).appendTo("#results");
         };
 
-        LookupApi.GameItemTemplate = function (game) {
-            var playTimeSpan = LookupApi.ParseTimeValue(game.TotalPlayTime);
+        SteamLookup.GameItemTemplate = function (game) {
+            var playTimeSpan = SteamLookup.ParseTimeValue(game.TotalPlayTime);
             var htmlOutput = "<tr><td>";
             htmlOutput += "<a href=\"/Steam/ViewGame/" + game.App.ID + "\">";
             htmlOutput += game.App.Name;
@@ -61,7 +61,7 @@ var SteamLookupApp;
             return htmlOutput;
         };
 
-        LookupApi.ParseTimeValue = function (timeValue) {
+        SteamLookup.ParseTimeValue = function (timeValue) {
             var timeSpan = {
                 Ticks: 0,
                 Days: 0,
@@ -99,20 +99,20 @@ var SteamLookupApp;
             return timeSpan;
         };
 
-        LookupApi.ProcessError = function (error) {
+        SteamLookup.ProcessError = function (error) {
             $("#results").children().remove();
             $("Error: " + error).appendTo("#results");
         };
 
-        LookupApi.FetchElementValue = function (element) {
+        SteamLookup.FetchElementValue = function (element) {
             return $(element.target).val();
         };
 
-        LookupApi.FilterInput = function (input) {
+        SteamLookup.FilterInput = function (input) {
             return input.length > 2;
         };
 
-        LookupApi.FetchValue = function (text) {
+        SteamLookup.FetchValue = function (text) {
             return $.ajaxAsObservable({
                 url: "http://localhost:53244/api/Profile/Get",
                 data: {
@@ -121,13 +121,13 @@ var SteamLookupApp;
                 }
             });
         };
-        return LookupApi;
+        return SteamLookup;
     })();
-    SteamLookupApp.LookupApi = LookupApi;
+    SteamLookupApp.SteamLookup = SteamLookup;
 })(SteamLookupApp || (SteamLookupApp = {}));
 
 $(document).ready(function () {
-    var lookupApi = new SteamLookupApp.LookupApi();
-    lookupApi.SetBindings();
+    var steamLookup = new SteamLookupApp.SteamLookup();
+    steamLookup.SetBindings();
 });
 //# sourceMappingURL=SteamLookup.js.map

@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "Steam Lookup";
+}
+
+@Html.Hidden("AppId", ViewContext.RouteData.Values["id"])
+<div class="row">
+    <h2>View Game Information</h2>
+</div>
+
+<div id="results" class="row">
+
+</div>
+
+@section scripts {
+    <script src="~/Scripts/app/ViewGame.js"></script>
+}

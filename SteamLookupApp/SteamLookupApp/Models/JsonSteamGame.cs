@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SteamLookupApp.Controllers.api
+namespace SteamLookupApp.Models
 {
     public class JsonSteamGame
         : Dictionary<int, GameItem>

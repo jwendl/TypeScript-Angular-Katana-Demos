@@ -55,5 +55,20 @@ interface TimeSpan {
   TotalSeconds: number;
 }
 }
+declare module SteamLookupApp.Models {
+interface SteamGame {
+  Id: string;
+  Name: string;
+  Website: string;
+  ImageLink: string;
+  Pricing: SteamLookupApp.Models.PriceInformation;
+  DownloadableContent: SteamLookupApp.Models.SteamGame[];
+}
+interface PriceInformation {
+  Initial: string;
+  Final: string;
+  Discount: string;
+}
+}
 
 
